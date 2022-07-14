@@ -1,11 +1,15 @@
 import fitz
 
 def extract_notes(file_name):
+    data = {}
+
     doc = fitz.open(file_name)
+    title = doc.metadata['title']
+    data['title'] = title
 
     # list to store the co-ordinates of all highlights
     highlights = []
-    highlight_text = []
+    data['highlights'] = []
 
     # loop till we have highlight annotation in the page
     for page in doc:
@@ -31,8 +35,8 @@ def extract_notes(file_name):
         all_words = page.get_text_words()
         for h in highlights:
             sentence = [w[4] for w in all_words if fitz.Rect(w[0:4]).intersects(h)]
-            highlight_text.append({ 'note': " ".join(sentence), 'link': "page: " + str(page.number + 1)})
+            data['highlights'].append({ 'note': " ".join(sentence), 'link': "page: " + str(page.number + 1)})
 
         highlights = []
-    # return "\n\n".join(highlight_text)
-    return highlight_text
+
+    return data
