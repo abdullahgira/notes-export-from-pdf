@@ -7,6 +7,9 @@ app = Flask(__name__)
 
 @app.route('/', methods=['POST'])
 def process_pdf():
+    if not os.path.exists('uploads'):
+      os.mkdir('uploads')
+
     dt_obj = datetime.utcnow()
     millisec = int(dt_obj.timestamp() * 1000)
     file_name = './uploads/file_' + str(millisec) + '.pdf'
