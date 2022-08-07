@@ -32,9 +32,22 @@ def extract_notes(file_name):
                     highlights.append(coord)
 
         all_words = page.get_text_words()
+        i = 0
+        sentence = []
+
         for h in highlights:
-            sentence = [w[4] for w in all_words if fitz.Rect(w[0:4]).intersects(h)]
+            sentence.extend([w[4] for w in all_words if fitz.Rect(w[0:4]).intersects(h)])
+
+            if i < len(highlights) - 1:
+                next_h = highlights[i + 1]
+                i += 1
+
+                # Group near blocks together when the difference in y axis is less than 15 units
+                if next_h.y0 - h.y0 < 15:
+                    continue
+
             data['highlights'].append({ 'note': " ".join(sentence), 'link': "page: " + str(page.number + 1)})
+            sentence = []
 
         highlights = []
 
