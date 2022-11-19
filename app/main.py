@@ -1,7 +1,9 @@
 import os
 from flask import Flask, request, jsonify
 from datetime import datetime
-from .extractor import extract_notes
+
+# from .extractor import extract_notes
+from .pdfannots.pdfannots import main
 
 app = Flask(__name__)
 
@@ -17,7 +19,7 @@ def process_pdf():
     pdf = request.files['file']
     pdf.save(file_name)
     
-    notes = extract_notes(file_name)
+    notes = main(pdf)
 
     if os.path.exists(file_name):
       os.remove(file_name)
